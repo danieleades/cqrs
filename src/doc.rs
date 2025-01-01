@@ -170,7 +170,7 @@ mod doc_tests {
 
     #[test]
     fn test_add_name() {
-        CustomerTestFramework::with(CustomerService::default())
+        CustomerTestFramework::with(CustomerService)
             .given_no_previous_events()
             .when(CustomerCommand::AddCustomerName {
                 name: "John Doe".to_string(),
@@ -182,7 +182,7 @@ mod doc_tests {
 
     #[test]
     fn test_add_name_again() {
-        CustomerTestFramework::with(CustomerService::default())
+        CustomerTestFramework::with(CustomerService)
             .given(vec![CustomerEvent::NameAdded {
                 name: "John Doe".to_string(),
             }])

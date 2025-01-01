@@ -540,7 +540,7 @@ mod event_store_test {
         )]));
         let store = PersistedEventStore::<MockRepo, TestAggregate>::new_event_store(repo);
         let events = store.load_events(TEST_AGGREGATE_ID).await.unwrap();
-        let event = events.get(0).unwrap();
+        let event = events.first().unwrap();
         assert_eq!(1, event.sequence);
         assert_eq!("SomethingWasDone", event.payload.event_type());
         assert_eq!(EVENT_VERSION, event.payload.event_version());
@@ -628,7 +628,7 @@ mod event_store_test {
             .await
             .unwrap();
         assert_eq!(3, event_envelopes.len());
-        let event = event_envelopes.get(0).unwrap();
+        let event = event_envelopes.first().unwrap();
         assert_eq!(TEST_AGGREGATE_ID, event.aggregate_id);
         assert_eq!(TestEvents::Started, event.payload);
         assert_eq!(
@@ -661,7 +661,7 @@ pub(crate) mod snapshotted_store_test {
         )]));
         let store = PersistedEventStore::<MockRepo, TestAggregate>::new_snapshot_store(repo, 2);
         let events = store.load_events(TEST_AGGREGATE_ID).await.unwrap();
-        let event = events.get(0).unwrap();
+        let event = events.first().unwrap();
         assert_eq!(1, event.sequence);
         assert_eq!("SomethingWasDone", event.payload.event_type());
         assert_eq!(EVENT_VERSION, event.payload.event_version());
@@ -731,7 +731,7 @@ pub(crate) mod snapshotted_store_test {
     async fn commit_one_event() {
         let repo = MockRepo::with_commit(Box::new(|events, snapshot_update| {
             assert_eq!(1, events.len());
-            let event = events.get(0).unwrap();
+            let event = events.first().unwrap();
             assert_eq!(TEST_AGGREGATE_ID, event.aggregate_id);
             assert_eq!(1, event.sequence);
 
@@ -749,7 +749,7 @@ pub(crate) mod snapshotted_store_test {
             .await
             .unwrap();
         assert_eq!(1, event_envelopes.len());
-        let event = event_envelopes.get(0).unwrap();
+        let event = event_envelopes.first().unwrap();
         assert_eq!(TEST_AGGREGATE_ID, event.aggregate_id);
         assert_eq!(TestEvents::Started, event.payload);
     }
@@ -758,7 +758,7 @@ pub(crate) mod snapshotted_store_test {
     async fn commit_one_event_with_previous() {
         let repo = MockRepo::with_commit(Box::new(|events, snapshot_update| {
             assert_eq!(1, events.len());
-            let event = events.get(0).unwrap();
+            let event = events.first().unwrap();
             assert_eq!(TEST_AGGREGATE_ID, event.aggregate_id);
             assert_eq!(3, event.sequence);
 
@@ -780,7 +780,7 @@ pub(crate) mod snapshotted_store_test {
             .await
             .unwrap();
         assert_eq!(1, event_envelopes.len());
-        let event = event_envelopes.get(0).unwrap();
+        let event = event_envelopes.first().unwrap();
         assert_eq!(TEST_AGGREGATE_ID, event.aggregate_id);
         assert_eq!(TestEvents::SomethingWasDone, event.payload);
     }
@@ -826,7 +826,7 @@ pub(crate) mod snapshotted_store_test {
             .await
             .unwrap();
         assert_eq!(3, event_envelopes.len());
-        let event = event_envelopes.get(0).unwrap();
+        let event = event_envelopes.first().unwrap();
         assert_eq!(TEST_AGGREGATE_ID, event.aggregate_id);
         assert_eq!(TestEvents::Started, event.payload);
         assert_eq!(
@@ -872,7 +872,7 @@ pub(crate) mod snapshotted_store_test {
             .await
             .unwrap();
         assert_eq!(2, event_envelopes.len());
-        let first_event = event_envelopes.get(0).unwrap();
+        let first_event = event_envelopes.first().unwrap();
         assert_eq!(TEST_AGGREGATE_ID, first_event.aggregate_id);
         assert_eq!(TestEvents::SomethingWasDone, first_event.payload);
         let last_event = event_envelopes.get(1).unwrap();
@@ -923,7 +923,7 @@ pub(crate) mod snapshotted_store_test {
             .await
             .unwrap();
         assert_eq!(5, event_envelopes.len());
-        let first_event = event_envelopes.get(0).unwrap();
+        let first_event = event_envelopes.first().unwrap();
         assert_eq!(TEST_AGGREGATE_ID, first_event.aggregate_id);
         assert_eq!(TestEvents::Started, first_event.payload);
         let last_event = event_envelopes.get(4).unwrap();
@@ -955,7 +955,7 @@ pub(crate) mod aggregate_store_test {
         )]));
         let store = PersistedEventStore::<MockRepo, TestAggregate>::new_aggregate_store(repo);
         let events = store.load_events(TEST_AGGREGATE_ID).await.unwrap();
-        let event = events.get(0).unwrap();
+        let event = events.first().unwrap();
         assert_eq!(1, event.sequence);
         assert_eq!("SomethingWasDone", event.payload.event_type());
         assert_eq!(EVENT_VERSION, event.payload.event_version());
@@ -1059,7 +1059,7 @@ pub(crate) mod aggregate_store_test {
             .await
             .unwrap();
         assert_eq!(3, event_envelopes.len());
-        let event = event_envelopes.get(0).unwrap();
+        let event = event_envelopes.first().unwrap();
         assert_eq!(TEST_AGGREGATE_ID, event.aggregate_id);
         assert_eq!(TestEvents::Started, event.payload);
         assert_eq!(

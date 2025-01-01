@@ -346,7 +346,7 @@ mod test {
     fn test_upcast() -> Box<SemanticVersionEventUpcasterFunc> {
         Box::new(|mut payload| {
             let current_id = payload.get("id").unwrap().to_string();
-            let updated_id = format!("CUST{}", current_id);
+            let updated_id = format!("CUST{current_id}");
             *payload.get_mut("id").unwrap() = json!(updated_id);
             payload
         })

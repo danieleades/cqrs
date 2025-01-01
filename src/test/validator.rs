@@ -27,7 +27,7 @@ impl<A: Aggregate> AggregateResultValidator<A> {
         let events = match self.result {
             Ok(expected_events) => expected_events,
             Err(err) => {
-                panic!("expected success, received aggregate error: '{}'", err);
+                panic!("expected success, received aggregate error: '{err}'");
             }
         };
         assert_eq!(events, expected_events);
@@ -49,7 +49,7 @@ impl<A: Aggregate> AggregateResultValidator<A> {
     pub fn then_expect_error_message(self, error_message: &str) {
         match self.result {
             Ok(events) => {
-                panic!("expected error, received events: '{:?}'", events);
+                panic!("expected error, received events: '{events:?}'");
             }
             Err(err) => assert_eq!(err.to_string(), error_message.to_string()),
         };
@@ -99,7 +99,7 @@ where
     pub fn then_expect_error(self, expected_error: A::Error) {
         match self.result {
             Ok(events) => {
-                panic!("expected error, received events: '{:?}'", events);
+                panic!("expected error, received events: '{events:?}'");
             }
             Err(err) => {
                 assert_eq!(err, expected_error);
