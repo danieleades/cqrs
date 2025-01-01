@@ -167,11 +167,8 @@ impl EventUpcaster for SemanticVersionEventUpcaster {
         if event_type != self.event_type {
             return false;
         }
-        let event_version = match SemanticVersion::from_str(event_version) {
-            Ok(result) => result,
-            Err(_) => {
-                return false;
-            }
+        let Ok(event_version) = SemanticVersion::from_str(event_version) else {
+            return false;
         };
         self.event_version.supersedes(&event_version)
     }

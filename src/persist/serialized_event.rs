@@ -26,7 +26,7 @@ pub struct SerializedEvent {
 }
 
 impl SerializedEvent {
-    /// Create a new SerializedEvent with the given values.
+    /// Create a new [`SerializedEvent`]` with the given values.
     pub fn new(
         aggregate_id: String,
         sequence: usize,
@@ -60,7 +60,7 @@ pub(crate) fn serialize_events<A: Aggregate>(
 
 pub(crate) fn deserialize_events<A: Aggregate>(
     events: Vec<SerializedEvent>,
-    upcasters: &Option<Vec<Box<dyn EventUpcaster>>>,
+    upcasters: Option<&Vec<Box<dyn EventUpcaster>>>,
 ) -> Result<Vec<EventEnvelope<A>>, PersistenceError> {
     let mut result = Vec::default();
     for event in events {

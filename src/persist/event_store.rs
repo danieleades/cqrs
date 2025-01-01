@@ -69,10 +69,10 @@ fn test_source_of_truth() {
 }
 
 /// Storage engine using a database backing.
+///
 /// This defaults to an event-sourced store (i.e., events are the single source of truth),
 /// but can be configured to be aggregate-sourced or use snapshots when a large number of events
 /// are associated with a single aggregate instance.
-///
 pub struct PersistedEventStore<R, A>
 where
     R: PersistedEventRepository,
@@ -191,7 +191,7 @@ where
         let serialized_events = self.repo.get_events::<A>(aggregate_id).await?;
         Ok(deserialize_events(
             serialized_events,
-            &self.event_upcasters,
+            self.event_upcasters.as_ref(),
         )?)
     }
 
@@ -216,7 +216,7 @@ where
                     .repo
                     .get_last_events::<A>(aggregate_id, context.current_sequence)
                     .await?;
-                deserialize_events(serialized_events, &self.event_upcasters)?
+                deserialize_events(serialized_events, self.event_upcasters.as_ref())?
             }
             SourceOfTruth::AggregateStore => {
                 vec![]
