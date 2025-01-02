@@ -18,7 +18,6 @@ use crate::DomainEvent;
 /// # use cqrs_es::doc::{CustomerEvent, CustomerError, CustomerCommand, CustomerService};
 /// # use cqrs_es::{Aggregate, AggregateError};
 /// # use serde::{Serialize,Deserialize};
-/// # use async_trait::async_trait;
 /// # use std::future::Future;
 /// #[derive(Default, Serialize, Deserialize)]
 /// struct Customer {
@@ -77,7 +76,7 @@ pub trait Aggregate: Default + Serialize + DeserializeOwned + Sync + Send {
     type Event: DomainEvent;
     /// The error returned when a command fails due to business logic.
     /// This is used to provide feedback to the user as to the nature of why the command was refused.
-    type Error: std::error::Error;
+    type Error: std::error::Error + Send;
     /// The external services required for the logic within the Aggregate
     type Services: Send + Sync;
     /// The aggregate type is used as the unique identifier for this aggregate and its events.
@@ -95,7 +94,6 @@ pub trait Aggregate: Default + Serialize + DeserializeOwned + Sync + Send {
     /// use cqrs_es::{Aggregate, AggregateError};
     /// # use serde::{Serialize, Deserialize, de::DeserializeOwned};
     /// # use cqrs_es::doc::{CustomerCommand, CustomerError, CustomerEvent, CustomerService};
-    /// # use async_trait::async_trait;
     /// #[derive(Default, Serialize, Deserialize)]
     /// # struct Customer {
     /// #     name: Option<String>,
@@ -154,13 +152,11 @@ pub trait Aggregate: Default + Serialize + DeserializeOwned + Sync + Send {
     /// # use serde::{Serialize, Deserialize, de::DeserializeOwned};
     /// # use cqrs_es::doc::{CustomerCommand, CustomerError, CustomerEvent, CustomerService};
     /// use cqrs_es::{Aggregate, AggregateError};
-    /// use async_trait::async_trait;
     /// #[derive(Default,Serialize,Deserialize)]
     /// # struct Customer {
     /// #     name: Option<String>,
     /// #     email: Option<String>,
     /// # }
-    /// # #[async_trait]
     /// # impl Aggregate for Customer {
     /// #     type Command = CustomerCommand;
     /// #     type Event = CustomerEvent;
