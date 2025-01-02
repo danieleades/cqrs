@@ -1,4 +1,6 @@
 #!/bin/bash
+export AWS_DEFAULT_REGION=us-west-2
+
 aws dynamodb create-table \
   --table-name Events \
       --key-schema \
