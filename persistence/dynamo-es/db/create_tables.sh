@@ -1,4 +1,6 @@
 #!/bin/bash
+aws configure set region us-east-1
+
 aws dynamodb create-table \
   --table-name Events \
       --key-schema \
