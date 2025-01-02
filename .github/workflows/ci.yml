@@ -35,6 +35,40 @@ jobs:
           toolchain: ${{ matrix.rust }}
       - run: cargo test
 
+  test-persistence:
+    name: test persistence
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        db: [postgres, mysql]
+        rust: [stable]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust }}
+      - run: |
+          cd persistence/${{ matrix.db }}-es
+          docker compose up -d
+          cargo test
+          docker compose down
+
+  # test-dynamo:
+  #   name: Test DynamoDB
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: dtolnay/rust-toolchain@stable
+  #     - name: Set up DynamoDB test environment
+  #       run: |
+  #         cd persistence/dynamo-es
+  #         docker compose up -d
+  #         ./db/create_tables.sh
+  #         sleep 10 # wait for the database to be ready
+  #         cargo test
+  #         docker compose down
+
   fmt:
     name: format
     runs-on: ubuntu-latest
