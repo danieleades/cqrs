@@ -37,17 +37,13 @@ jobs:
 
   test-persistence:
     name: test persistence
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest]
         db: [postgres, mysql]
-        rust: [stable]
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: ${{ matrix.rust }}
+      - uses: dtolnay/rust-toolchain@stable
       - run: |
           cd persistence/${{ matrix.db }}-es
           docker compose up -d
