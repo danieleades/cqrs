@@ -1,6 +1,4 @@
 #!/bin/bash
-aws configure
-
 aws dynamodb create-table \
   --table-name Events \
       --key-schema \
