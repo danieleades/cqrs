@@ -366,14 +366,12 @@ pub(crate) mod shared_test {
 
     #[async_trait]
     impl Aggregate for TestAggregate {
+        const TYPE: &str = "TestAggregate";
         type Command = TestCommands;
         type Event = TestEvents;
         type Error = TestError;
         type Services = TestService;
 
-        fn aggregate_type() -> String {
-            "TestAggregate".to_string()
-        }
         async fn handle(
             &self,
             command: Self::Command,

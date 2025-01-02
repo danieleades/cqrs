@@ -64,6 +64,9 @@ use crate::DomainEvent;
 /// ```
 #[async_trait]
 pub trait Aggregate: Default + Serialize + DeserializeOwned + Sync + Send {
+    /// The aggregate type is used as the unique identifier for this aggregate and its events.
+    /// This is used for persisting the events and snapshots to a database.
+    const TYPE: &str;
     /// Specifies the inbound command used to make changes in the state of the Aggregate.
     type Command;
     /// Specifies the published events representing some change in state of the Aggregate.
@@ -73,9 +76,7 @@ pub trait Aggregate: Default + Serialize + DeserializeOwned + Sync + Send {
     type Error: std::error::Error;
     /// The external services required for the logic within the Aggregate
     type Services: Send + Sync;
-    /// The aggregate type is used as the unique identifier for this aggregate and its events.
-    /// This is used for persisting the events and snapshots to a database.
-    fn aggregate_type() -> String;
+
     /// This method consumes and processes commands.
     /// The result should be either a vector of events if the command is successful,
     /// or an error if the command is rejected.
