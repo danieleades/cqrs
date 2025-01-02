@@ -26,7 +26,7 @@ use crate::DomainEvent;
 ///
 /// #[async_trait]
 /// impl Aggregate for Customer {
-///     const TYPE: &str = "customer";
+///     const TYPE: &'static str = "customer";
 ///     type Command = CustomerCommand;
 ///     type Event = CustomerEvent;
 ///     type Error = CustomerError;
@@ -64,7 +64,7 @@ use crate::DomainEvent;
 pub trait Aggregate: Default + Serialize + DeserializeOwned + Sync + Send {
     /// The aggregate type is used as the unique identifier for this aggregate and its events.
     /// This is used for persisting the events and snapshots to a database.
-    const TYPE: &str;
+    const TYPE: &'static str;
     /// Specifies the inbound command used to make changes in the state of the Aggregate.
     type Command;
     /// Specifies the published events representing some change in state of the Aggregate.
@@ -94,7 +94,7 @@ pub trait Aggregate: Default + Serialize + DeserializeOwned + Sync + Send {
     /// # }
     /// # #[async_trait]
     /// # impl Aggregate for Customer {
-    /// #     const TYPE: &str = "customer";
+    /// #     const TYPE: &'static str = "customer";
     /// #     type Command = CustomerCommand;
     /// #     type Event = CustomerEvent;
     /// #     type Error = CustomerError;
@@ -147,7 +147,7 @@ pub trait Aggregate: Default + Serialize + DeserializeOwned + Sync + Send {
     /// # }
     /// # #[async_trait]
     /// # impl Aggregate for Customer {
-    /// #     const TYPE: &str = "customer";
+    /// #     const TYPE: &'static str = "customer";
     /// #     type Command = CustomerCommand;
     /// #     type Event = CustomerEvent;
     /// #     type Error = CustomerError;

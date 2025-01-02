@@ -366,7 +366,7 @@ pub(crate) mod shared_test {
 
     #[async_trait]
     impl Aggregate for TestAggregate {
-        const TYPE: &str = "TestAggregate";
+        const TYPE: &'static str = "TestAggregate";
         type Command = TestCommands;
         type Event = TestEvents;
         type Error = TestError;
