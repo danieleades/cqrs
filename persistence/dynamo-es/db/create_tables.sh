@@ -1,5 +1,5 @@
 #!/bin/bash
-export AWS_DEFAULT_REGION=us-west-2
+aws configure
 
 aws dynamodb create-table \
   --table-name Events \
