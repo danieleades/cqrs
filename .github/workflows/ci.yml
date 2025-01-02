@@ -44,10 +44,10 @@ jobs:
       - name: Set up Postgres test environment
         run: |
           cd persistence/postgres-es
-          docker-compose up -d
+          docker compose up -d
           sleep 10 # wait for the database to be ready
           cargo test
-          docker-compose down
+          docker compose down
 
   test-mysql:
     name: Test MySQL
@@ -58,10 +58,10 @@ jobs:
       - name: Set up MySQL test environment
         run: |
           cd persistence/mysql-es
-          docker-compose up -d
+          docker compose up -d
           sleep 10 # wait for the database to be ready
           cargo test
-          docker-compose down
+          docker compose down
 
   test-dynamo:
     name: Test DynamoDB
@@ -72,11 +72,11 @@ jobs:
       - name: Set up DynamoDB test environment
         run: |
           cd persistence/dynamo-es
-          docker-compose up -d
+          docker compose up -d
           ./db/create_tables.sh
           sleep 10 # wait for the database to be ready
           cargo test
-          docker-compose down
+          docker compose down
 
   fmt:
     name: format
