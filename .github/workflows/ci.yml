@@ -51,7 +51,7 @@ jobs:
           docker compose down
 
   # test-dynamo:
-  #   name: Test DynamoDB
+  #   name: test persistence (dynamo)
   #   runs-on: ubuntu-latest
   #   steps:
   #     - uses: actions/checkout@v4
@@ -61,7 +61,6 @@ jobs:
   #         cd persistence/dynamo-es
   #         docker compose up -d
   #         ./db/create_tables.sh
-  #         sleep 10 # wait for the database to be ready
   #         cargo test
   #         docker compose down
 

@@ -21,10 +21,24 @@ jobs:
       - name: Install cargo-llvm-cov
         uses: taiki-e/install-action@cargo-llvm-cov
 
-      - name: Run llvm-cov
+      - name: Run llvm-cov for main crate
         run: cargo llvm-cov --doctests --lcov --output-path lcov.info
+
+      - name: Run llvm-cov for postgres persistence
+        run: |
+          cd persistence/postgres-es
+          docker compose up -d
+          cargo llvm-cov --doctests --lcov --output-path lcov-postgres.info
+          docker compose down
+
+      - name: Run llvm-cov for mysql persistence
+        run: |
+          cd persistence/mysql-es
+          docker compose up -d
+          cargo llvm-cov --doctests --lcov --output-path lcov-mysql.info
+          docker compose down
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
-          files: lcov.info
+          files: lcov.info, persistence/postgres-es/lcov-postgres.info, persistence/mysql-es/lcov-mysql.info
