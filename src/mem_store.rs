@@ -55,7 +55,7 @@ impl<A: Aggregate> MemStore<A> {
         Arc::clone(&self.events)
     }
 
-    fn load_commited_events(
+    fn load_committed_events(
         &self,
         aggregate_id: &str,
     ) -> Result<Vec<EventEnvelope<A>>, AggregateError<A::Error>> {
@@ -83,7 +83,7 @@ impl<A: Aggregate> EventStore<A> for MemStore<A> {
         &self,
         aggregate_id: &str,
     ) -> Result<Vec<EventEnvelope<A>>, AggregateError<A::Error>> {
-        let events = self.load_commited_events(aggregate_id)?;
+        let events = self.load_committed_events(aggregate_id)?;
         println!(
             "loading: {} events for aggregate ID '{}'",
             &events.len(),
@@ -125,7 +125,7 @@ impl<A: Aggregate> EventStore<A> for MemStore<A> {
             return Ok(Vec::default());
         }
         let aggregate_id = self.aggregate_id(&wrapped_events);
-        let mut new_events = self.load_commited_events(&aggregate_id).unwrap();
+        let mut new_events = self.load_committed_events(&aggregate_id).unwrap();
         for event in &wrapped_events {
             new_events.push(event.clone());
         }

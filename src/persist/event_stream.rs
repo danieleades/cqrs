@@ -4,7 +4,7 @@ use tokio::sync::mpsc::{Receiver, Sender};
 
 /// Accesses a domain event stream for a particular aggregate.
 ///
-/// _Note: design expected to change after [implemention of RFC 2996](https://github.com/rust-lang/rust/issues/79024)._
+/// _Note: design expected to change after [implementation of RFC 2996](https://github.com/rust-lang/rust/issues/79024)._
 pub struct ReplayStream {
     queue: Receiver<Result<SerializedEvent, PersistenceError>>,
 }
