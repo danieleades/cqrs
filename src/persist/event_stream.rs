@@ -19,7 +19,7 @@ impl ReplayStream {
     /// Receive the next upcasted event or error in the stream, if no event is available this will block.
     pub async fn next<A: Aggregate>(
         &mut self,
-        event_upcasters: &Vec<Box<dyn EventUpcaster>>,
+        event_upcasters: &[Box<dyn EventUpcaster>],
     ) -> Option<Result<EventEnvelope<A>, PersistenceError>> {
         self.queue.recv().await.map(|result| {
             result.and_then(|serialized_event| {
@@ -29,10 +29,7 @@ impl ReplayStream {
     }
 }
 
-fn upcast_event(
-    event: SerializedEvent,
-    upcasters: &Vec<Box<dyn EventUpcaster>>,
-) -> SerializedEvent {
+fn upcast_event(event: SerializedEvent, upcasters: &[Box<dyn EventUpcaster>]) -> SerializedEvent {
     upcasters.into_iter().fold(event, |event, upcaster| {
         if upcaster.can_upcast(&event.event_type, &event.event_version) {
             upcaster.upcast(event)
@@ -69,7 +66,7 @@ mod test {
             .await
             .unwrap();
         drop(feed);
-        let found = stream.next::<MyAggregate>(&vec![]).await;
+        let found = stream.next::<MyAggregate>(&[]).await;
         assert!(
             matches!(
                 found.unwrap().unwrap_err(),

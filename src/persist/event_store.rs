@@ -191,7 +191,7 @@ where
         let serialized_events = self.repo.get_events::<A>(aggregate_id).await?;
         Ok(deserialize_events(
             serialized_events,
-            self.event_upcasters.as_ref(),
+            &self.event_upcasters,
         )?)
     }
 
@@ -216,7 +216,7 @@ where
                     .repo
                     .get_last_events::<A>(aggregate_id, context.current_sequence)
                     .await?;
-                deserialize_events(serialized_events, self.event_upcasters.as_ref())?
+                deserialize_events(serialized_events, &self.event_upcasters)?
             }
             SourceOfTruth::AggregateStore => {
                 vec![]
