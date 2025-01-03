@@ -80,7 +80,7 @@ where
 {
     repo: R,
     storage: SourceOfTruth,
-    event_upcasters: Option<Vec<Box<dyn EventUpcaster>>>,
+    event_upcasters: Vec<Box<dyn EventUpcaster>>,
     _phantom: PhantomData<A>,
 }
 
@@ -108,7 +108,7 @@ where
         Self {
             repo,
             storage: SourceOfTruth::EventStore,
-            event_upcasters: None,
+            event_upcasters: vec![],
             _phantom: PhantomData,
         }
     }
@@ -133,7 +133,7 @@ where
         Self {
             repo,
             storage: SourceOfTruth::AggregateStore,
-            event_upcasters: None,
+            event_upcasters: vec![],
             _phantom: PhantomData,
         }
     }
@@ -156,7 +156,7 @@ where
         Self {
             repo,
             storage: SourceOfTruth::Snapshot(snapshot_size),
-            event_upcasters: None,
+            event_upcasters: vec![],
             _phantom: PhantomData,
         }
     }
@@ -170,7 +170,7 @@ where
         Self {
             repo: self.repo,
             storage: self.storage,
-            event_upcasters: Some(event_upcasters),
+            event_upcasters,
             _phantom: PhantomData,
         }
     }
