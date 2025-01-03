@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        crate: [main, postgres, mysql]
+        crate: [cqrs, postgres, mysql]
     steps:
       - name: checkout source
         uses: actions/checkout@v4
@@ -26,7 +26,7 @@ jobs:
 
       - name: Run llvm-cov
         run: |
-          if [ "${{ matrix.crate }}" == "main" ]; then
+          if [ "${{ matrix.crate }}" == "cqrs" ]; then
             cargo llvm-cov --doctests --lcov --output-path lcov.info
           else
             cd persistence/${{ matrix.crate }}-es
@@ -38,4 +38,6 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: lcov.info
+          flags: ${{ matrix.crate }}
