@@ -488,17 +488,12 @@ pub(crate) mod shared_test {
         }
 
         async fn stream_all_events<A: Aggregate>(&self) -> Result<ReplayStream, PersistenceError> {
-            let result = self.events_result.lock().unwrap().take().unwrap();
-            match result {
-                Ok(events) => {
-                    let (mut feed, stream) = ReplayStream::new(events.len());
-                    for event in events {
-                        feed.push(Ok(event)).await?;
-                    }
-                    Ok(stream)
-                }
-                Err(err) => Err(err),
+            let events = self.events_result.lock().unwrap().take().unwrap()?;
+            let (mut feed, stream) = ReplayStream::new(events.len());
+            for event in events {
+                feed.push(Ok(event)).await?;
             }
+            Ok(stream)
         }
     }
 
@@ -550,8 +545,8 @@ mod event_store_test {
     async fn load_error() {
         let repo = MockRepo::with_events(Err(PersistenceError::OptimisticLockError));
         let store = PersistedEventStore::<MockRepo, TestAggregate>::new_event_store(repo);
-        let result = store.load_events(TEST_AGGREGATE_ID).await;
-        match result {
+
+        match store.load_events(TEST_AGGREGATE_ID).await {
             Err(AggregateError::AggregateConflict) => {}
             _ => panic!("expected technical error"),
         }
