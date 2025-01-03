@@ -24,12 +24,9 @@ impl<A: Aggregate> AggregateResultValidator<A> {
     /// # }
     /// ```
     pub fn then_expect_events(self, expected_events: Vec<A::Event>) {
-        let events = match self.result {
-            Ok(expected_events) => expected_events,
-            Err(err) => {
-                panic!("expected success, received aggregate error: '{err}'");
-            }
-        };
+        let events = self.result.unwrap_or_else(|err| {
+            panic!("expected success, received aggregate error: '{err}'");
+        });
         assert_eq!(events, expected_events);
     }
 
