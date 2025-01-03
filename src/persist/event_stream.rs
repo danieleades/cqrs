@@ -19,24 +19,13 @@ impl ReplayStream {
     /// Receive the next upcasted event or error in the stream, if no event is available this will block.
     pub async fn next<A: Aggregate>(
         &mut self,
-        event_upcasters: &[Box<dyn EventUpcaster>],
+        upcasters: &[Box<dyn EventUpcaster>],
     ) -> Option<Result<EventEnvelope<A>, PersistenceError>> {
-        self.queue.recv().await.map(|result| {
-            result.and_then(|serialized_event| {
-                upcast_event(serialized_event, event_upcasters).try_into()
-            })
-        })
+        self.queue
+            .recv()
+            .await
+            .map(|result| result.and_then(|event| event.upcast(upcasters).try_into()))
     }
-}
-
-fn upcast_event(event: SerializedEvent, upcasters: &[Box<dyn EventUpcaster>]) -> SerializedEvent {
-    upcasters.into_iter().fold(event, |event, upcaster| {
-        if upcaster.can_upcast(&event.event_type, &event.event_version) {
-            upcaster.upcast(event)
-        } else {
-            event
-        }
-    })
 }
 
 /// Used to send events to a `ReplayStream` for replaying events.

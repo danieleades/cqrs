@@ -46,6 +46,16 @@ impl SerializedEvent {
             metadata,
         }
     }
+
+    pub(crate) fn upcast(self, upcasters: &[Box<dyn EventUpcaster>]) -> Self {
+        upcasters.into_iter().fold(self, |event, upcaster| {
+            if upcaster.can_upcast(&event.event_type, &event.event_version) {
+                upcaster.upcast(event)
+            } else {
+                event
+            }
+        })
+    }
 }
 
 pub(crate) fn serialize_events<A: Aggregate>(
@@ -62,18 +72,8 @@ pub(crate) fn deserialize_events<A: Aggregate>(
     events: Vec<SerializedEvent>,
     upcasters: &[Box<dyn EventUpcaster>],
 ) -> Result<Vec<EventEnvelope<A>>, PersistenceError> {
-    let upcast = |event: SerializedEvent| {
-        upcasters.into_iter().fold(event, |event, upcaster| {
-            if upcaster.can_upcast(&event.event_type, &event.event_version) {
-                upcaster.upcast(event)
-            } else {
-                event
-            }
-        })
-    };
-
     let mut results = Vec::default();
-    for event in events.into_iter().map(upcast) {
+    for event in events.into_iter().map(|event| event.upcast(upcasters)) {
         results.push(EventEnvelope::<A>::try_from(event)?);
     }
     Ok(results)
